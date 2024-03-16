@@ -1,7 +1,7 @@
-from parser import Problem
-from action import Action
-from formula import Primitive, Forall, When, And
-from predicate import Predicate
+from .parser import Problem
+from .action import Action
+from .formula import Primitive, Forall, When, And
+from .predicate import Predicate
 import itertools
 
 
@@ -119,9 +119,9 @@ class GroundProblem(Problem):
                 sorted (list (p.fluents)))]):
             print("fluents")
             print("*self*")
-            print(sorted( list( self.fluents)))
+            print((sorted( list( self.fluents))))
             print("*p*")
-            print(sorted (list( p.fluents)))
+            print((sorted (list( p.fluents))))
             return False
 
         if self.types != p.types or self.parent_types != p.parent_types:
@@ -148,7 +148,7 @@ class GroundProblem(Problem):
 
         # types
         #TODO likely wrong, doesn't capture the type hierarchy
-        s = " ".join (filter(lambda t: t!= Predicate.OBJECT, self.types))
+        s = " ".join ([t for t in self.types if t!= Predicate.OBJECT])
         fp.write (sp + "(:types %s)%s" %(s, "\n"))
 
         # fluents (ground predicates)
@@ -403,16 +403,16 @@ class GroundProblem(Problem):
             "Fluents": self.fluents
         }
 
-        for k, v in d.iteritems():
-            print("*** %s ***" % k)
+        for k, v in d.items():
+            print(("*** %s ***" % k))
             if k == "Operators":
                 for op in self.operators:
                     op.dump(lvl=1)  # inherited from superclass Action
             elif hasattr(v, "__iter__"):
                 for item in v:
-                    print("\t" + str(item))
+                    print(("\t" + str(item)))
             else:
-                print("\t" + str(v))
+                print(("\t" + str(v)))
 
 
 class Operator(Action):
@@ -465,12 +465,12 @@ class Operator(Action):
         """
 
         # for operators, sufficient just to print the name, because pretty self-explanatory
-        print("\t" * lvl + "Operator %s" % self.name)
+        print(("\t" * lvl + "Operator %s" % self.name))
         if len(self.parameters) > 0:
-            print("\t" * (lvl + 1) + "Parameters: " + \
-                ", ".join([v_type + " " + v_name for v_name, v_type in self.parameters]))
+            print(("\t" * (lvl + 1) + "Parameters: " + \
+                ", ".join([v_type + " " + v_name for v_name, v_type in self.parameters])))
         else:
-            print("\t" * (lvl + 1) + "Parameters: <none>")
+            print(("\t" * (lvl + 1) + "Parameters: <none>"))
             #print(lvl + 1) * "\t" + "Precondition: " + str(self.precondition)
         #print(lvl + 1) * "\t" + "Effect: " + str(self.effect)
         #print(lvl + 1) * "\t" + "Observe: " + str(self.observe)

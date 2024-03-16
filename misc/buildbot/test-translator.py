@@ -17,7 +17,7 @@ and the output file are the same for all versions.
 ./test-translator.py gripper:prob01.pddl depot:pfile1
 """
 
-from __future__ import print_function
+
 
 from collections import defaultdict
 import itertools
@@ -82,7 +82,7 @@ def get_tasks():
     if 'all' in sys.argv:
         # Use the whole benchmark suite.
         return itertools.chain.from_iterable(
-                tasks for tasks in _get_all_tasks_by_domain().values())
+                tasks for tasks in list(_get_all_tasks_by_domain().values()))
 
     # Use the problems given on the commandline.
     tasks = [arg for arg in sys.argv[1:] if not arg.startswith('--')]

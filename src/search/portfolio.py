@@ -59,7 +59,7 @@ def safe_unlink(filename):
 def set_limit(kind, soft, hard):
     try:
         resource.setrlimit(kind, (soft, hard))
-    except (OSError, ValueError), err:
+    except (OSError, ValueError) as err:
         # This can happen if the limit has already been set externally.
         sys.stderr.write("Limit for %s could not be set to %s (%s). "
                          "Previous limit: %s\n" %
@@ -97,13 +97,13 @@ def adapt_search(args, search_cost_type, heuristic_cost_type, plan_file):
                 "S_COST_TYPE", str(search_cost_type))
             args[index + 1] = search_config
             break
-    print "g bound: %s" % g_bound
-    print "next plan number: %d" % (plan_no + 1)
+    print("g bound: %s" % g_bound)
+    print("next plan number: %d" % (plan_no + 1))
     return curr_plan_file
 
 def run_search(planner, args, sas_file, plan_file, timeout=None, memory=None):
     complete_args = [planner] + args + ["--plan-file", plan_file]
-    print "args: %s" % complete_args
+    print("args: %s" % complete_args)
     sys.stdout.flush()
 
     def set_limits():
@@ -116,7 +116,7 @@ def run_search(planner, args, sas_file, plan_file, timeout=None, memory=None):
             # Hard limit reached --> SIGKILL.
             soft_limit = int(math.ceil(timeout))
             hard_limit = min(soft_limit + 1, external_hard_limit)
-            print "timeout: %.2f -> (%d, %d)" % (timeout, soft_limit, hard_limit)
+            print("timeout: %.2f -> (%d, %d)" % (timeout, soft_limit, hard_limit))
             sys.stdout.flush()
             set_limit(resource.RLIMIT_CPU, soft_limit, hard_limit)
         if memory is not None:
@@ -127,31 +127,31 @@ def run_search(planner, args, sas_file, plan_file, timeout=None, memory=None):
 
     returncode = subprocess.call(complete_args, stdin=open(sas_file),
                                  preexec_fn=set_limits)
-    print "returncode:", returncode
-    print
+    print("returncode:", returncode)
+    print()
     return returncode
 
 def determine_timeout(remaining_time_at_start, configs, pos):
     remaining_time = remaining_time_at_start - sum(os.times()[:4])
     relative_time = configs[pos][0]
-    print "remaining time: %s" % remaining_time
+    print("remaining time: %s" % remaining_time)
     remaining_relative_time = sum(config[0] for config in configs[pos:])
-    print "config %d: relative time %d, remaining %d" % (
-        pos, relative_time, remaining_relative_time)
+    print("config %d: relative time %d, remaining %d" % (
+        pos, relative_time, remaining_relative_time))
     # For the last config we have relative_time == remaining_relative_time, so
     # we use all of the remaining time at the end.
     run_timeout = remaining_time * relative_time / remaining_relative_time
     return run_timeout
 
 def _generate_exitcode(exitcodes):
-    print "Exit codes:", exitcodes
+    print("Exit codes:", exitcodes)
     exitcodes = set(exitcodes)
     if EXIT_SIGXCPU in exitcodes:
         exitcodes.remove(EXIT_SIGXCPU)
         exitcodes.add(EXIT_TIMEOUT)
     unexpected_codes = exitcodes - EXPECTED_EXITCODES
     if unexpected_codes:
-        print "Error: Unexpected exit codes:", list(unexpected_codes)
+        print("Error: Unexpected exit codes:", list(unexpected_codes))
         if len(unexpected_codes) == 1:
             return unexpected_codes.pop()
         else:
@@ -164,7 +164,7 @@ def _generate_exitcode(exitcodes):
             return code
     if exitcodes == set([EXIT_OUT_OF_MEMORY, EXIT_TIMEOUT]):
         return EXIT_TIMEOUT_AND_MEMORY
-    print "Error: Unhandled exit codes:", exitcodes
+    print("Error: Unhandled exit codes:", exitcodes)
     return EXIT_CRITICAL_ERROR
 
 def run(configs, optimal=True, final_config=None, final_config_builder=None,
@@ -174,7 +174,7 @@ def run(configs, optimal=True, final_config=None, final_config_builder=None,
 
     # Time limits are either positive values in seconds or -1 (unlimited).
     soft_time_limit, hard_time_limit = resource.getrlimit(resource.RLIMIT_CPU)
-    print 'External time limit:', hard_time_limit
+    print('External time limit:', hard_time_limit)
     if (hard_time_limit != resource.RLIM_INFINITY and
             timeout is not None and
             timeout != hard_time_limit):
@@ -188,16 +188,16 @@ def run(configs, optimal=True, final_config=None, final_config_builder=None,
         sys.stderr.write("No timeout has been set for the portfolio so we take "
                          "the default of %ds.\n" % DEFAULT_TIMEOUT)
         timeout = DEFAULT_TIMEOUT
-    print 'Internal time limit:', timeout
+    print('Internal time limit:', timeout)
 
     # Memory limits are either positive values in Bytes or -1 (unlimited).
     soft_mem_limit, hard_mem_limit = resource.getrlimit(resource.RLIMIT_AS)
-    print 'External memory limit:', hard_mem_limit
+    print('External memory limit:', hard_mem_limit)
     memory = hard_mem_limit - BYTES_FOR_PYTHON
     # Do not limit memory if the previous limit was very low or unlimited.
     if memory < 0:
         memory = None
-    print 'Internal memory limit:', memory
+    print('Internal memory limit:', memory)
 
     assert len(extra_args) == 3, extra_args
     sas_file = extra_args.pop(0)
@@ -213,9 +213,9 @@ def run(configs, optimal=True, final_config=None, final_config_builder=None,
             if line.strip():
                 remaining_time_at_start -= float(line)
     except EnvironmentError:
-        print "WARNING! elapsed_time not found -- assuming full time available."
+        print("WARNING! elapsed_time not found -- assuming full time available.")
 
-    print "remaining time at start: %s" % remaining_time_at_start
+    print("remaining time at start: %s" % remaining_time_at_start)
 
     if optimal:
         exitcodes = run_opt(configs, planner, sas_file, plan_file,
@@ -225,7 +225,7 @@ def run(configs, optimal=True, final_config=None, final_config_builder=None,
                             final_config, final_config_builder,
                             remaining_time_at_start, memory)
     exitcode = _generate_exitcode(exitcodes)
-    print "Exit with %d" % exitcode
+    print("Exit with %d" % exitcode)
     sys.exit(exitcode)
 
 def _can_change_cost_type(args):
@@ -284,7 +284,7 @@ def run_sat(configs, unitcost, planner, sas_file, plan_file, final_config,
                     if exitcode == EXIT_UNSOLVABLE:
                         return exitcodes
                 if final_config_builder:
-                    print "Build final config."
+                    print("Build final config.")
                     final_config = final_config_builder(args[:])
                     break
 
@@ -295,7 +295,7 @@ def run_sat(configs, unitcost, planner, sas_file, plan_file, final_config,
         configs = configs_next_round
 
     if final_config:
-        print "Abort portfolio and run final config."
+        print("Abort portfolio and run final config.")
         exitcode = _run_sat_config([(1, list(final_config))], 0, search_cost_type,
                                    heuristic_cost_type, planner, sas_file,
                                    plan_file, remaining_time_at_start, memory)

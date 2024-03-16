@@ -8,7 +8,7 @@ import re
 import subprocess
 import sys
 import time
-import xmlrpclib
+import xmlrpc.client
 
 import markup
 
@@ -29,15 +29,15 @@ def read_password():
     with open(path) as password_file:
         try:
             return password_file.read().strip()
-        except IOError, e:
+        except IOError as e:
             logging.critical("Could not find password file %s!\nIs it present?"
                      % PASSWORD_FILE)
             sys.exit(1)
 
 def connect():
-    wiki = xmlrpclib.ServerProxy(WIKI_URL + "?action=xmlrpc2", allow_none=True)
+    wiki = xmlrpc.client.ServerProxy(WIKI_URL + "?action=xmlrpc2", allow_none=True)
     auth_token = wiki.getAuthToken(BOT_USERNAME, read_password())
-    multi_call = xmlrpclib.MultiCall(wiki)
+    multi_call = xmlrpc.client.MultiCall(wiki)
     multi_call.applyAuthToken(auth_token)
     return multi_call
 
@@ -54,7 +54,7 @@ def get_pages_from_wiki(titles):
         multi_call.getPage(title)
     response = list(multi_call())
     assert(response[0] == 'SUCCESS')
-    return dict(zip(titles, response[1:]))
+    return dict(list(zip(titles, response[1:])))
 
 def send_pages(pages):
     multi_call = connect()
@@ -66,11 +66,11 @@ def attempt(func, *args):
     global sleep_time
     try:
         result = func(*args)
-    except xmlrpclib.Fault as error:
+    except xmlrpc.client.Fault as error:
         #this usually means the page content did not change.
         logging.exception("Error: %s\nShould not happen anymore." % error)
         sys.exit(1)
-    except xmlrpclib.ProtocolError, err:
+    except xmlrpc.client.ProtocolError as err:
         logging.warning("Error: %s\n"
             "Will retry after %s seconds." % (err.errcode, sleep_time))
         #retry after sleeping
@@ -139,10 +139,10 @@ def get_changed_pages(old_doc_pages, new_doc_pages, all_titles):
     def add_page(title, text):
         #check if this page is new or changed
         if old_doc_pages.get(title, '') != text:
-            print title, "changed"
+            print(title, "changed")
             changed_pages.append([title, text])
         else:
-            print title, "unchanged"
+            print(title, "unchanged")
 
     changed_pages = []
     overview_lines = [];
@@ -178,4 +178,4 @@ if __name__ == '__main__':
         logging.warning("There are pages in the wiki documentation "
             "that are not created by Fast Downward:\n" +
             "\n".join(sorted(missing_titles)))
-    print "Done"
+    print("Done")

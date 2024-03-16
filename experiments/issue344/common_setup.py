@@ -221,7 +221,7 @@ class MyExperiment(DownwardExperiment):
         DownwardExperiment.__init__(self, path=path, repo=repo, **kwargs)
 
         if configs is not None:
-            for nick, config in configs.items():
+            for nick, config in list(configs.items()):
                 self.add_config(nick, config)
 
         if suite is not None:

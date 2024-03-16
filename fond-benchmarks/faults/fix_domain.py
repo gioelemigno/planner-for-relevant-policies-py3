@@ -4,7 +4,7 @@ from krrt.utils import get_file_list, read_file, write_file, get_lines
 
 domains = get_file_list('.', ['fixed', 'fip'], ['d_'])
 
-print domains
+print(domains)
 
 for dom in domains:
     # Fix the original domain
@@ -17,6 +17,6 @@ for dom in domains:
     fixed_dom_fip = fixed_dom + '.fip'
     write_file(fixed_dom_fip, preface)
     
-    print "python ../../src/translate/determinizer.py %s p_1_1.pddl >> %s" % (fixed_dom, fixed_dom_fip)
+    print("python ../../src/translate/determinizer.py %s p_1_1.pddl >> %s" % (fixed_dom, fixed_dom_fip))
     os.system("python ../../src/translate/determinizer.py %s p_1_1.pddl >> %s" % (fixed_dom, fixed_dom_fip))
     os.system('echo ")" >> ' + fixed_dom_fip)

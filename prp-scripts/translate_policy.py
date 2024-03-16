@@ -89,13 +89,13 @@ for i in range(num_vars):
         mapping["%s:%s" % (name, j)] = vals[j]
 
 print("Mapping:\n")
-print('\n'.join(["  %s\t<-> \t %s" % (k,mapping[k]) for k in sorted(mapping.keys())]))
+print(('\n'.join(["  %s\t<-> \t %s" % (k,mapping[k]) for k in sorted(mapping.keys())])))
 print("")
 
 def translate_lines(lines):
     for line in lines:
         if 'If' == line[:2]:
-            print("If holds: %s" % '/'.join([mapping[item] for item in line.split(' ')[2:]]))
+            print(("If holds: %s" % '/'.join([mapping[item] for item in line.split(' ')[2:]])))
         else:
             print(line)
 

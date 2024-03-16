@@ -57,7 +57,7 @@ class RegressionCheckReport(AbsoluteReport):
 
     def get_markup(self):
         lines = []
-        for (domain, problem), runs in self.problem_runs.items():
+        for (domain, problem), runs in list(self.problem_runs.items()):
             runs_base = [run for run in runs if self._get_rev(run) == self.baseline]
             runs_new = [run for run in runs if self._get_rev(run) != self.baseline]
             assert len(runs_base) == len(runs_new), (len(runs_base), len(runs_new))
@@ -76,7 +76,7 @@ class RegressionCheckReport(AbsoluteReport):
         AbsoluteReport.write(self)
         markup = self.get_markup()
         if markup:
-            print 'There has been a regression:'
-            print
-            print markup
+            print('There has been a regression:')
+            print()
+            print(markup)
             logging.critical('Regression found.')

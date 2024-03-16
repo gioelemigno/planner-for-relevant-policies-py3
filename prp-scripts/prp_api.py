@@ -48,7 +48,7 @@ class PRPPolicy:
     def __init__(self, sol):
 
         with open(sol) as f:
-            data = filter(lambda x: x!='', [l.strip() for l in f.readlines()])
+            data = [x for x in [l.strip() for l in f.readlines()] if x!='']
 
         self.mapping = TwoWayDict()
         self.policy = []
@@ -117,7 +117,7 @@ def partial_state_clause(ps):
     from krrt.sat import CNF
     new_clauses = []
     aux = '+'.join(sorted(ps))
-    new_clauses.append(map(CNF.Not, ps) + [aux])
+    new_clauses.append(list(map(CNF.Not, ps)) + [aux])
     for f in ps:
         new_clauses.append([CNF.Not(aux), f])
     return (aux, new_clauses)
@@ -136,8 +136,8 @@ def action_circuit(p, mapfile, cnffile):
     CLAUSES = []
 
     for psap in p.policy:
-        print(CLAUSES.extend(partial_state_clause(psap[0])[1]))
-        print(psap[1])
+        print((CLAUSES.extend(partial_state_clause(psap[0])[1])))
+        print((psap[1]))
         print("")
 
 
@@ -159,7 +159,7 @@ def count_circuit(p, mapfile, cnffile, force_full=False):
 
     if not force_full and len(p.fsap) == 0:
         inverted = True
-        CLAUSES = [map(neg, map(fluentvar, psap[0])) for psap in p.policy]
+        CLAUSES = [list(map(neg, list(map(fluentvar, psap[0])))) for psap in p.policy]
 
     else:
         inverted = False
@@ -167,7 +167,7 @@ def count_circuit(p, mapfile, cnffile, force_full=False):
         # For every a, a -> \/_{<ps,a> in P}, ps
         A = set([psap[1] for psap in p.policy])
         for a in A:
-            PS = [psap[0] for psap in filter(lambda x: x[1] == a, p.policy)]
+            PS = [psap[0] for psap in [x for x in p.policy if x[1] == a]]
             psaux = []
             for ps in PS:
                 (aux, clauses) = partial_state_clause(ps)
@@ -180,25 +180,25 @@ def count_circuit(p, mapfile, cnffile, force_full=False):
 
         # To avoid projection: For every <ps,a>, ps->a
         for psap in p.policy:
-            CLAUSES.append([psap[1]] + map(CNF.Not, map(fluentvar, psap[0])))
+            CLAUSES.append([psap[1]] + list(map(CNF.Not, list(map(fluentvar, psap[0])))))
 
         # For every <de,a>, de->!a
         for act in p.fsap:
             for de in p.fsap[act]:
-                CLAUSES.append(map(neg, map(fluentvar, de)) + [CNF.Not(act)])
+                CLAUSES.append(list(map(neg, list(map(fluentvar, de)))) + [CNF.Not(act)])
 
         # At least one action is applicable
         CLAUSES.append(set([psap[1] for psap in p.policy]))
 
     if DEBUG:
-        print('\n'.join(map(str, CLAUSES)))
+        print(('\n'.join(map(str, CLAUSES))))
 
     F = CNF.Formula(CLAUSES)
     F.writeMapping(mapfile)
     F.writeCNF(cnffile)
 
     cmd = "./bin/sharpSAT %s > %s.log" % (cnffile, cnffile)
-    print("\nRunning sharpSAT Command: %s" % cmd)
+    print(("\nRunning sharpSAT Command: %s" % cmd))
     print("Solving...")
     os.system(cmd)
 
@@ -208,7 +208,7 @@ def count_circuit(p, mapfile, cnffile, force_full=False):
         print("Inverting...")
         count = 2**len(FLUENTS) - count
 
-    print("\nStates Handled: %d\n" % count)
+    print(("\nStates Handled: %d\n" % count))
 
     #print "\nD# Command: ./dsharp -projectionViaPriority -priority %s %s\n" % \
     #      (','.join(map(str, sorted([F.mapping[f] for f in FLUENTS]))), cnffile)

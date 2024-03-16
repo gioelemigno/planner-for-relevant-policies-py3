@@ -117,7 +117,7 @@ class Document(object):
             result = '\n'.join(finished)
 
         # Txt2tags error, show the messsage to the user
-        except txt2tags.error, msg:
+        except txt2tags.error as msg:
             logging.error(msg)
             result = msg
 
@@ -131,6 +131,6 @@ class Document(object):
 if __name__ == '__main__':
     doc = Document('MyTitle', 'Max Mustermann')
     doc.add_text('{{Roter Text|color:red}}')
-    print doc
-    print
-    print doc.render('tex')
+    print(doc)
+    print()
+    print(doc.render('tex'))

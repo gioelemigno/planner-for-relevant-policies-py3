@@ -241,7 +241,7 @@ class IssueExperiment(DownwardExperiment):
         DownwardExperiment.__init__(self, path=path, repo=repo, **kwargs)
 
         self._config_nicks = []
-        for nick, config in configs.items():
+        for nick, config in list(configs.items()):
             self.add_config(nick, config)
 
         self.add_suite(suite)
@@ -336,7 +336,7 @@ class IssueExperiment(DownwardExperiment):
                         valid_attributes = attributes
                     for attribute in valid_attributes:
                         name = "-".join([rev1, rev2, attribute, config_nick])
-                        print "Make scatter plot for", name
+                        print("Make scatter plot for", name)
                         report = ScatterPlotReport(
                             filter_config=[algo1, algo2],
                             attributes=[attribute],

@@ -209,7 +209,7 @@ PRP_PARAMS = {'best': { '--jic-limit': [18000],
 
 def parse_fip(outfile):
     runtime = get_value(outfile, '.* ([0-9]+\.?[0-9]+) seconds searching.*', float)
-    policy_size = len(filter(lambda x: 'case S' in x, read_file(outfile)))
+    policy_size = len([x for x in read_file(outfile) if 'case S' in x])
     return runtime, policy_size
 
 def check_segfault(outfile):
@@ -298,7 +298,7 @@ def doit(domain, dofip = True, doprp = True, redundant = 0, prp_params = PRP_PAR
 
 def doit_fip(domain, dom_probs, exp_name = 'fip'):
 
-    print("\n\nRunning FIP experiments on domain, %s" % domain)
+    print(("\n\nRunning FIP experiments on domain, %s" % domain))
 
     fip_args = ["-o ../%s.fip -f ../%s" % (item[0], item[1]) for item in dom_probs]
 
@@ -340,15 +340,15 @@ def doit_fip(domain, dom_probs, exp_name = 'fip'):
                 run, size = parse_fip(result.output_file)
                 fip_csv.append("%s,%s,%f,%d,-" % (domain, prob, run, size))
 
-    print("\nTimed out %d times." % timeouts)
-    print("Ran out of memory %d times." % memouts)
-    print("Unknown error %d times." % errorouts)
+    print(("\nTimed out %d times." % timeouts))
+    print(("Ran out of memory %d times." % memouts))
+    print(("Unknown error %d times." % errorouts))
     append_file("RESULTS/%s-%s-results.csv" % (exp_name, domain), fip_csv)
 
 
 def doit_prp(domain, dom_probs, prp_params, exp_name = 'prp'):
 
-    print("\n\nRunning %s experiments on domain, %s" % (exp_name, domain))
+    print(("\n\nRunning %s experiments on domain, %s" % (exp_name, domain)))
 
     prp_args = ["../%s ../%s" % (item[0], item[1]) for item in dom_probs]
 
@@ -409,10 +409,10 @@ def doit_prp(domain, dom_probs, prp_params, exp_name = 'prp'):
                                                             successful_states, replans, actions, policy_score,
                                                             str(strongly_cyclic), str(succeeded)))
 
-    print("\nTimed out %d times." % timeouts)
-    print("Ran out of memory %d times." % memouts)
-    print("Unknown error %d times." % errorouts)
-    print("Invalid parameter settings %d times." % parametererrors)
+    print(("\nTimed out %d times." % timeouts))
+    print(("Ran out of memory %d times." % memouts))
+    print(("Unknown error %d times." % errorouts))
+    print(("Invalid parameter settings %d times." % parametererrors))
     append_file("RESULTS/%s-%s-results.csv" % (exp_name, domain), prp_csv)
 
 
@@ -500,7 +500,7 @@ if __name__ == '__main__':
         doit(myargs['-domain'], prp_params = PRP_PARAMS['best'])
 
     if 'redundant' in flags:
-        for i in REDUNDANT_DOMAINS[myargs['-domain']].keys():
+        for i in list(REDUNDANT_DOMAINS[myargs['-domain']].keys()):
             doit(myargs['-domain'], redundant = i)
 
     if 'jic' in flags:

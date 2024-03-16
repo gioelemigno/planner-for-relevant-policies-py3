@@ -19,5 +19,5 @@ class StateSizeParser(Parser):
 
 if __name__ == '__main__':
     parser = StateSizeParser()
-    print 'Running state size parser'
+    print('Running state size parser')
     parser.parse()

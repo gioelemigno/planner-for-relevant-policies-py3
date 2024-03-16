@@ -22,30 +22,30 @@ def print_parameters(params):
     for p in params:
         mapping.setdefault(p.type, []).append(p.name)
     print("  :parameters (")
-    for t in mapping.keys():
-        print("%s - %s" % (' '.join(mapping[t]), t))
+    for t in list(mapping.keys()):
+        print(("%s - %s" % (' '.join(mapping[t]), t)))
     print(")")
 
 def print_precondition(precond, start_string = "  :precondition"):
     print(start_string)
     if precond.__class__ == pddl.conditions.Conjunction:
-        print("(and %s)" % ' '.join([get_atom(a) for a in precond.parts]))
+        print(("(and %s)" % ' '.join([get_atom(a) for a in precond.parts])))
     else:
-        print(get_atom(precond))
+        print((get_atom(precond)))
 
 def print_effects(eff, precond):
     # Duplicate the precondition if there are no effects
     if len(eff) == 0:
         print_precondition(precond, "  :effect")
     elif len(eff) == 1:
-        print("  :effect %s" % get_atom(eff[0].literal))
+        print(("  :effect %s" % get_atom(eff[0].literal)))
     else:
-        print("  :effect (and %s)" % ' '.join([get_atom(a.literal) for a in eff]))
+        print(("  :effect (and %s)" % ' '.join([get_atom(a.literal) for a in eff])))
     
 task = pddl.open()
 
 for action in task.actions:
-    print("\n(:action %s" % get_name(action.name))
+    print(("\n(:action %s" % get_name(action.name)))
     print_parameters(action.parameters)
     print_precondition(action.precondition)
     print_effects(action.effects, action.precondition)

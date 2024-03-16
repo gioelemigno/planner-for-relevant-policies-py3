@@ -11,4 +11,4 @@ for filename in sys.argv[1:]:
     for line in open(filename):
         line = line.rstrip("\n")
         if line.startswith("#ifndef"):
-            print(line == expected, filename, line)
+            print((line == expected, filename, line))

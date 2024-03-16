@@ -190,14 +190,14 @@ def remove_universal_quantifiers_without_axioms(task):
 
             type_lists = []
             for param in condition.parameters:
-                type_lists.append(filter(lambda obj: obj.type == param.type, task.objects))
+                type_lists.append([obj for obj in task.objects if obj.type == param.type])
 
             object_combos = list(product(*type_lists))
             types = [param.name for param in condition.parameters]
             copies = []
 
             for combo in object_combos:
-                copies.append(lit_replacement(template, dict(zip(types, [obj.name for obj in combo]))))
+                copies.append(lit_replacement(template, dict(list(zip(types, [obj.name for obj in combo])))))
 
             return pddl.Conjunction(copies)
         else:

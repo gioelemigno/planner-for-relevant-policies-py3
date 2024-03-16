@@ -12,23 +12,23 @@ def get_choice(query, options):
         print(query)
         i = 1
         for opt in options:
-            print(" %d. %s" % (i, opt))
+            print((" %d. %s" % (i, opt)))
             i += 1
-        answer = input("? ") #raw_input("? ")
+        answer = eval(input("? ")) #raw_input("? ")
         try:
             choice = int(answer)
             assert 0 < choice < i
             not_valid = False
         except:
-            print("\nError: You must select a number between 1 and %d" % (i-1))
+            print(("\nError: You must select a number between 1 and %d" % (i-1)))
     return choice - 1
 
 
 def print_domain_stats(p):
     print("")
-    print("Actions:\t %d" % len(p.actions))
-    print("Max faults:\t %d" % p.max_faults)
-    print("1-Normative:\t %s" % str(is_normative(p)))
+    print(("Actions:\t %d" % len(p.actions)))
+    print(("Max faults:\t %d" % p.max_faults))
+    print(("1-Normative:\t %s" % str(is_normative(p))))
 
 
 def load_problem(dom_name):
@@ -70,11 +70,11 @@ def add_fault_limit(p, max_faults):
                                    [],
                                    parser.Not([parser.Primitive(started)]),
                                    None,
-                                   parser.And(map(parser.Primitive, [started, p.faults[0]]))))
+                                   parser.And(list(map(parser.Primitive, [started, p.faults[0]])))))
 
 
 def pick_faulty_outcome(p, action):
-    effs = filter(lambda eff: not eff.faulty, action.effect.args)
+    effs = [eff for eff in action.effect.args if not eff.faulty]
     if len(effs) < 1:
         print("Error: No more normal effects to become faulty.")
         return False
@@ -85,8 +85,8 @@ def pick_faulty_outcome(p, action):
 
     print("\nYou have the following choice of outcomes:")
     for i in range(len(effs)):
-        print("\n\t--- %d ---" % (i+1))
-        print(str(effs[i]))
+        print(("\n\t--- %d ---" % (i+1)))
+        print((str(effs[i])))
     print("")
 
     outcome_choice = get_choice('Which outcome?', ['' for i in range(len(effs))] + ['Cancel'])
@@ -133,7 +133,7 @@ def is_normative(p):
 
     for a in p.actions:
         if isinstance(a.effect, parser.Oneof):
-            return 1 == len(filter(lambda eff: not eff.faulty, a.effect.args))
+            return 1 == len([eff for eff in a.effect.args if not eff.faulty])
 
 
 def convert(dom_name):
@@ -157,14 +157,14 @@ def convert(dom_name):
             print("")
             print("Actions:")
             for a in p.actions:
-                print(" - %s" % a.name)
+                print((" - %s" % a.name))
             print("")
         elif 1 == next_action:
             print("")
             if -1 != p.max_faults:
                 print("Error: Max faults already set (reload the domain first)")
             else:
-                answer = input("Maximum number of faults? ") #raw_input("Maximum number of faults? ")
+                answer = eval(input("Maximum number of faults? ")) #raw_input("Maximum number of faults? ")
                 try:
                     choice = int(answer)
                     if choice < 1:
@@ -172,14 +172,14 @@ def convert(dom_name):
                     else:
                         add_fault_limit(p, choice)
                 except ValueError:
-                    print("\nError: You must select a number for max faults (%s)" % str(answer))
+                    print(("\nError: You must select a number for max faults (%s)" % str(answer)))
         elif 2 == next_action:
             print("")
             if -1 == p.max_faults:
                 print("Error: You must first set the maximum number of faults.")
                 continue
 
-            suitable_actions = filter(action_valid, p.actions)
+            suitable_actions = list(filter(action_valid, p.actions))
 
             if not suitable_actions:
                 print("Error: No actions available to make faulty.")
@@ -198,20 +198,20 @@ def convert(dom_name):
                 print("Error: You must first set the maximum number of faults.")
                 continue
 
-            suitable_actions = filter(action_valid, p.actions)
+            suitable_actions = list(filter(action_valid, p.actions))
 
             if not suitable_actions:
                 print("Error: No actions available to make faulty.")
                 continue
 
             for act in suitable_actions:
-                effs = filter(lambda eff: not eff.faulty, act.effect.args)
+                effs = [eff for eff in act.effect.args if not eff.faulty]
                 if len(effs) > 1:
-                    print("\nMaking action %s faulty." % act.name)
+                    print(("\nMaking action %s faulty." % act.name))
                     print("You have the following choice of outcomes:")
                     for i in range(len(effs)):
-                        print("\n\t--- %d ---" % (i+1))
-                        print(str(effs[i]))
+                        print(("\n\t--- %d ---" % (i+1)))
+                        print((str(effs[i])))
                     print("")
 
                     outcome_choice = get_choice('Which is the normal (i.e., non-faulty) outcome?', ['' for i in range(len(effs))])
@@ -228,7 +228,7 @@ def convert(dom_name):
             print("\n\n-----------------\n")
         elif 6 == next_action:
             print("")
-            answer = input("What filename would you like to use? ")#raw_input("What filename would you like to use? ")
+            answer = eval(input("What filename would you like to use? "))#raw_input("What filename would you like to use? ")
             p.export(answer, '')
         elif 7 == next_action:
             p = load_problem(dom_name)
@@ -240,7 +240,7 @@ def convert(dom_name):
 if __name__ == '__main__':
     print("")
     if len(sys.argv) != 2:
-        print("  Usage: python %s <domain>\n" % sys.argv[0])
+        print(("  Usage: python %s <domain>\n" % sys.argv[0]))
         sys.exit(1)
 
     convert(sys.argv[1])
