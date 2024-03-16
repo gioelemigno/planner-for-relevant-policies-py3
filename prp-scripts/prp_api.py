@@ -96,18 +96,18 @@ class PRPPolicy:
 def display(p):
     from pprint import pprint
 
-    print
-    print "Mapping:"
+    print("")
+    print("Mapping:")
     pprint(p.mapping)
 
-    print
-    print "Policy:"
+    print("")
+    print("Policy:")
     pprint(p.policy)
 
-    print
-    print "FSAP:"
+    print("")
+    print("FSAP:")
     pprint(p.fsap)
-    print
+    print("")
 
 
 
@@ -136,9 +136,9 @@ def action_circuit(p, mapfile, cnffile):
     CLAUSES = []
 
     for psap in p.policy:
-        print CLAUSES.extend(partial_state_clause(psap[0])[1])
-        print psap[1]
-        print
+        print(CLAUSES.extend(partial_state_clause(psap[0])[1]))
+        print(psap[1])
+        print("")
 
 
 def count_circuit(p, mapfile, cnffile, force_full=False):
@@ -163,7 +163,7 @@ def count_circuit(p, mapfile, cnffile, force_full=False):
 
     else:
         inverted = False
-        print "Warning: Mixing FSAP and Policy leads to difficult CNF theories"
+        print("Warning: Mixing FSAP and Policy leads to difficult CNF theories")
         # For every a, a -> \/_{<ps,a> in P}, ps
         A = set([psap[1] for psap in p.policy])
         for a in A:
@@ -191,35 +191,35 @@ def count_circuit(p, mapfile, cnffile, force_full=False):
         CLAUSES.append(set([psap[1] for psap in p.policy]))
 
     if DEBUG:
-        print '\n'.join(map(str, CLAUSES))
+        print('\n'.join(map(str, CLAUSES)))
 
     F = CNF.Formula(CLAUSES)
     F.writeMapping(mapfile)
     F.writeCNF(cnffile)
 
     cmd = "./bin/sharpSAT %s > %s.log" % (cnffile, cnffile)
-    print "\nRunning sharpSAT Command: %s" % cmd
-    print "Solving..."
+    print("\nRunning sharpSAT Command: %s" % cmd)
+    print("Solving...")
     os.system(cmd)
 
-    print "Counting..."
+    print("Counting...")
     count = int(get_lines("%s.log" % cnffile, lower_bound='# solutions', upper_bound='# END')[0].strip())
     if inverted:
-        print "Inverting..."
+        print("Inverting...")
         count = 2**len(FLUENTS) - count
 
-    print "\nStates Handled: %d\n" % count
+    print("\nStates Handled: %d\n" % count)
 
     #print "\nD# Command: ./dsharp -projectionViaPriority -priority %s %s\n" % \
     #      (','.join(map(str, sorted([F.mapping[f] for f in FLUENTS]))), cnffile)
 
 if __name__ == '__main__':
     if len(os.sys.argv) != 3:
-        print "\nError with input."
-        print USAGE_STRING
+        print("\nError with input.")
+        print(USAGE_STRING)
         os.sys.exit(1)
 
-    print "Parsing solution..."
+    print("Parsing solution...")
     p = PRPPolicy(os.sys.argv[2])
 
     if 'display' == os.sys.argv[1]:
@@ -229,6 +229,6 @@ if __name__ == '__main__':
     elif 'action-circuit' == os.sys.argv[1]:
         action_circuit(p, os.sys.argv[2]+'.map', os.sys.argv[2]+'.cnf')
     else:
-        print "\nError with input."
-        print USAGE_STRING
+        print("\nError with input.")
+        print(USAGE_STRING)
         os.sys.exit(1)

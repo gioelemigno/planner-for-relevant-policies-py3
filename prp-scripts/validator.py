@@ -56,7 +56,7 @@ class VALAction:
 
 def validate(dfile, pfile, sol, val):
 
-    print "\nParsing the problem..."
+    print("\nParsing the problem...")
 
     problem = grounder.GroundProblem(dfile, pfile)
 
@@ -98,7 +98,7 @@ def validate(dfile, pfile, sol, val):
 
     val.load(sol, fluents)
 
-    print "\nStarting the FOND simulation..."
+    print("\nStarting the FOND simulation...")
 
     unhandled = []
 
@@ -136,13 +136,13 @@ def validate(dfile, pfile, sol, val):
 
 
     # Analyze the final controller
-    print "\nSimulation finished!\n"
-    print "\n-{ Controller Statistics }-\n"
-    print "\t Nodes: %d" % G.number_of_nodes()
-    print "\t Edges: %d" % G.number_of_edges()
-    print "     Unhandled: %d" % len(unhandled)
-    print "\tStrong: %s" % str(0 == len(list(nx.simple_cycles(G))))
-    print " Strong Cyclic: %s" % str(G.number_of_nodes() == len(nx.single_source_shortest_path(G.reverse(), nodes[goal_state])))
+    print("\nSimulation finished!\n")
+    print("\n-{ Controller Statistics }-\n")
+    print("\t Nodes: %d" % G.number_of_nodes())
+    print("\t Edges: %d" % G.number_of_edges())
+    print("     Unhandled: %d" % len(unhandled))
+    print("\tStrong: %s" % str(0 == len(list(nx.simple_cycles(G)))))
+    print(" Strong Cyclic: %s" % str(G.number_of_nodes() == len(nx.single_source_shortest_path(G.reverse(), nodes[goal_state]))))
 
     write_dot(G, 'graph.dot')
 
@@ -159,12 +159,12 @@ def validate(dfile, pfile, sol, val):
             for s in unhandled:
                 f.write("\n%s\n" % _state_string(unfluents, s))
 
-    print "\n     Plan output: graph.dot"
-    print "  Action mapping: action.map"
+    print("\n     Plan output: graph.dot")
+    print("  Action mapping: action.map")
     if len(unhandled) > 0:
-        print "Unhandled states: unhandled.states"
+        print("Unhandled states: unhandled.states")
 
-    print
+    print("")
 
 
 def _convert_cond_effect(mapping, eff):
@@ -218,7 +218,7 @@ def progress(s, o, m):
                     adds.add(reff)
 
     if 0 != len(adds & dels):
-        print "Warning: Conflicting adds and deletes on action %s" % str(o)
+        print("Warning: Conflicting adds and deletes on action %s" % str(o))
 
     return State(((s.fluents - dels) | adds))
 
@@ -227,8 +227,8 @@ if __name__ == '__main__':
     try:
         (dom, prob, sol, interp) = os.sys.argv[1:]
     except:
-        print "\nError with input."
-        print USAGE_STRING
+        print("\nError with input.")
+        print(USAGE_STRING)
         os.sys.exit(1)
 
     validate(dom, prob, sol, importlib.import_module("validators.%s" % interp))

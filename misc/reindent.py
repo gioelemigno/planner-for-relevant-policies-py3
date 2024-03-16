@@ -84,7 +84,7 @@ def main():
 def check(file):
     if os.path.isdir(file) and not os.path.islink(file):
         if verbose:
-            print "listing directory", file
+            print("listing directory", file)
         names = os.listdir(file)
         for name in names:
             fullname = os.path.join(file, name)
@@ -95,7 +95,7 @@ def check(file):
         return
 
     if verbose:
-        print "checking", file, "...",
+        print("checking", file, "...")
     try:
         f = open(file)
     except IOError, msg:
@@ -106,24 +106,24 @@ def check(file):
     f.close()
     if r.run():
         if verbose:
-            print "changed."
+            print("changed.")
             if dryrun:
-                print "But this is a dry run, so leaving it alone."
+                print("But this is a dry run, so leaving it alone.")
         if not dryrun:
             bak = file + ".bak"
             if os.path.exists(bak):
                 os.remove(bak)
             os.rename(file, bak)
             if verbose:
-                print "renamed", file, "to", bak
+                print("renamed", file, "to", bak)
             f = open(file, "w")
             r.write(f)
             f.close()
             if verbose:
-                print "wrote new", file
+                print("wrote new", file)
     else:
         if verbose:
-            print "unchanged."
+            print("unchanged.")
 
 def _rstrip(line, JUNK='\n \t'):
     """Return line stripped of trailing spaces, tabs, newlines.

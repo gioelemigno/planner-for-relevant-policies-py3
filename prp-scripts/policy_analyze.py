@@ -78,10 +78,10 @@ def average_prp_data(data):
     return new_data
 
 def print_setting(s):
-    print "jic-limit(%s), forgetpolicy(%s), fullstate(%s),\
+    print("jic-limit(%s), forgetpolicy(%s), fullstate(%s),\
            \nplanlocal(%s), partial-planloca(%s), usepolicy(%s),\
            \nlimit-planlocal(%s), detect-deadends(%s), generalize-deadends(%s),\
-           \nonline-deadends(%s), optimized-scd(%s)" % (s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], s[9], s[10])
+           \nonline-deadends(%s), optimized-scd(%s)" % (s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], s[9], s[10]))
 
 def do_anova(domain, dep):
     if 'every' == domain:
@@ -143,11 +143,11 @@ def prp_compare_two(domain, type1, type2, name1, name2):
     return _prp_compare_two(domain, type1, type2, name1, name2, prp_data)
 
 def _prp_compare_two(domain, type1, type2, name1, name2, prp_data):
-    print "\nAnalyzing Two PRP Settings for %s:" % domain
+    print("\nAnalyzing Two PRP Settings for %s:" % domain)
     print_setting(type1)
-    print "\n  -vs-\n"
+    print("\n  -vs-\n")
     print_setting(type2)
-    print
+    print("")
 
     # Load both sets
     prp_data1 = [prp_data[0]] + filter_prp_settings(prp_data, *type1)
@@ -173,9 +173,9 @@ def _prp_compare_two(domain, type1, type2, name1, name2, prp_data):
     prp_solved2 = set(prp_mapping2.keys())
     both_solved = prp_solved1 & prp_solved2
 
-    print "%s Coverage: %d" % (name1, len(prp_solved1))
-    print "%s Coverage: %d" % (name2, len(prp_solved2))
-    print "Combined Coverage: %d" % len(both_solved)
+    print("%s Coverage: %d" % (name1, len(prp_solved1)))
+    print("%s Coverage: %d" % (name2, len(prp_solved2)))
+    print("Combined Coverage: %d" % len(both_solved))
 
     time_data = []
     size_data = []
@@ -187,12 +187,12 @@ def _prp_compare_two(domain, type1, type2, name1, name2, prp_data):
         time_data.append((float(prp_mapping1[(dom,prob)][2]), float(prp_mapping2[(dom,prob)][2])))
         size_data.append((float(prp_mapping1[(dom,prob)][3]), float(prp_mapping2[(dom,prob)][3])))
 
-    print "%s Avg time: %f" % (name1, sum([item[0] for item in time_data]) / float(len(time_data)))
-    print "%s Avg time: %f" % (name2, sum([item[1] for item in time_data]) / float(len(time_data)))
-    print "%s Total time: %f" % (name1, sum([item[0] for item in time_data]))
-    print "%s Total time: %f" % (name2, sum([item[1] for item in time_data]))
-    print "%s Avg size: %f" % (name1, sum([item[0] for item in size_data]) / float(len(size_data)))
-    print "%s Avg size: %f" % (name2, sum([item[1] for item in size_data]) / float(len(size_data)))
+    print("%s Avg time: %f" % (name1, sum([item[0] for item in time_data]) / float(len(time_data))))
+    print("%s Avg time: %f" % (name2, sum([item[1] for item in time_data]) / float(len(time_data))))
+    print("%s Total time: %f" % (name1, sum([item[0] for item in time_data])))
+    print("%s Total time: %f" % (name2, sum([item[1] for item in time_data])))
+    print("%s Avg size: %f" % (name1, sum([item[0] for item in size_data]) / float(len(size_data))))
+    print("%s Avg size: %f" % (name2, sum([item[1] for item in size_data]) / float(len(size_data))))
 
     if name1 == name2:
         return
@@ -208,7 +208,7 @@ def _prp_compare_two(domain, type1, type2, name1, name2, prp_data):
     plot([x1,x2], [y1,y2], x_label = "Time (s)", y_label = "Problems Solved", no_scatter = True,
          xyline = False, names = [name1, name2], x_log = True, col = False)
 
-    print
+    print("")
 
 def fip_vs_prp(domain):
     if 'every' in domain:
@@ -252,7 +252,7 @@ def fip_vs_prp(domain):
         fip_data = load_CSV("RESULTS/fip-%s-results.csv" % domain)
         prp_data = load_CSV("RESULTS/prp-%s-results.csv" % domain)
 
-    print "\nAnalyzing FIP vs PRP for %s:" % domain
+    print("\nAnalyzing FIP vs PRP for %s:" % domain)
 
     # Load both sets
     solved_fip_data = filter(lambda x: x[-1] == '-' and x[-2] != '0', fip_data)
@@ -279,10 +279,10 @@ def fip_vs_prp(domain):
     prp_solved = set(prp_mapping.keys())
     both_solved = fip_solved & prp_solved
 
-    print "FIP Coverage: %d / %d" % (len(fip_solved), len(nosol_fip_data))
-    print "PRP Coverage: %d / %d" % (len(prp_solved), len(nosol_prp_data))
-    print "Combined Coverage: %d" % len(both_solved)
-    print "FIP - PRP: %s" % str(fip_solved - prp_solved)
+    print("FIP Coverage: %d / %d" % (len(fip_solved), len(nosol_fip_data)))
+    print("PRP Coverage: %d / %d" % (len(prp_solved), len(nosol_prp_data)))
+    print("Combined Coverage: %d" % len(both_solved))
+    print("FIP - PRP: %s" % str(fip_solved - prp_solved))
 
     all_time_data = []
     time_data = []
@@ -309,7 +309,7 @@ def fip_vs_prp(domain):
     plot([x1,x2], [y1,y2], x_label = "Time", y_label = "Problems Solved", no_scatter = True,
          xyline = False, names = ["FIP", "PRP"], x_log = True, col = False)
 
-    print
+    print("")
 
 
 def online_compare(domain):
@@ -387,20 +387,20 @@ def online_compare(domain):
         ffr_times.append(float(ffr_mapping[(dom,prob)][-7]) / float(ffr_mapping[(dom,prob)][6]))
         prp_times.append(float(prp_mapping[(dom,prob)][-7]) / float(prp_mapping[(dom,prob)][6]))
 
-    print "Online replanning for domain %s:\n" % domain
-    print "Total ffr successful runs: %d" % len(ffr_solved)
-    print "Total prp successful runs: %d" % len(prp_solved)
-    print "Total shared successful runs: %d\n" % len(both_solved)
-    print "FFR Average Actions: %f" % (sum(ffr_actions) / float(len(ffr_actions)))
-    print "PRP Average Actions: %f\n" % (sum(prp_actions) / float(len(prp_actions)))
-    print "FFR Average Replans: %f" % (sum(ffr_replans) / float(len(ffr_replans)))
-    print "PRP Average Replans: %f\n" % (sum(prp_replans) / float(len(prp_replans)))
-    print "FFR Average Success: %f" % (sum(ffr_success) / float(len(ffr_success)))
-    print "PRP Average Success: %f\n" % (sum(prp_success) / float(len(prp_success)))
-    print "FFR Total Success: %d" % int(sum(ffr_success))
-    print "PRP Total Success: %d\n" % int(sum(prp_success))
-    print "FFR Average Time: %f" % (sum(ffr_times) / float(len(ffr_times)))
-    print "PRP Average Time: %f\n" % (sum(prp_times) / float(len(prp_times)))
+    print("Online replanning for domain %s:\n" % domain)
+    print("Total ffr successful runs: %d" % len(ffr_solved))
+    print("Total prp successful runs: %d" % len(prp_solved))
+    print("Total shared successful runs: %d\n" % len(both_solved))
+    print("FFR Average Actions: %f" % (sum(ffr_actions) / float(len(ffr_actions))))
+    print("PRP Average Actions: %f\n" % (sum(prp_actions) / float(len(prp_actions))))
+    print("FFR Average Replans: %f" % (sum(ffr_replans) / float(len(ffr_replans))))
+    print("PRP Average Replans: %f\n" % (sum(prp_replans) / float(len(prp_replans))))
+    print("FFR Average Success: %f" % (sum(ffr_success) / float(len(ffr_success))))
+    print("PRP Average Success: %f\n" % (sum(prp_success) / float(len(prp_success))))
+    print("FFR Total Success: %d" % int(sum(ffr_success)))
+    print("PRP Total Success: %d\n" % int(sum(prp_success)))
+    print("FFR Average Time: %f" % (sum(ffr_times) / float(len(ffr_times))))
+    print("PRP Average Time: %f\n" % (sum(prp_times) / float(len(prp_times))))
     return
 
 
@@ -429,8 +429,8 @@ def ab_compare(res1, res2):
     res2_experiments = set(map(lambda x: x.split('/')[-1], get_file_list(res2, match_list=['.csv'])))
     shared_results = list(res1_experiments & res2_experiments)
 
-    print
-    print "Found %d overlapping experiments to compare." % len(shared_results)
+    print("")
+    print("Found %d overlapping experiments to compare." % len(shared_results))
 
     time_score = [0.0, 0.0]
     size_score = [0.0, 0.0]
@@ -441,7 +441,7 @@ def ab_compare(res1, res2):
         data2 = load_CSV(res2+'/'+res)[1:]
 
         if len(data1) != len(data2):
-            print "Error with %s experiment -- different number of data points." % res
+            print("Error with %s experiment -- different number of data points." % res)
             continue
 
         times1 = [get_time(line) for line in data1]
@@ -464,16 +464,16 @@ def ab_compare(res1, res2):
         coverage[0] += cov1
         coverage[1] += cov2
 
-        print "\n    [ %s ]\n" % res.split('-results.csv')[0]
-        print "  Coverage: %d -vs- %d" % (cov1, cov2)
-        print "Size Score: %.2f -vs- %.2f" % (size1, size2)
-        print "Time Score: %.2f -vs- %.2f\n" % (time1, time2)
+        print("\n    [ %s ]\n" % res.split('-results.csv')[0])
+        print("  Coverage: %d -vs- %d" % (cov1, cov2))
+        print("Size Score: %.2f -vs- %.2f" % (size1, size2))
+        print("Time Score: %.2f -vs- %.2f\n" % (time1, time2))
 
-    print "\n    [ OVERALL ]"
-    print "  Coverage: %d -vs- %d" % (coverage[0], coverage[1])
-    print "Size Score: %.2f -vs- %.2f" % (size_score[0], size_score[1])
-    print "Time Score: %.2f -vs- %.2f" % (time_score[0], time_score[1])
-    print
+    print("\n    [ OVERALL ]")
+    print("  Coverage: %d -vs- %d" % (coverage[0], coverage[1]))
+    print("Size Score: %.2f -vs- %.2f" % (size_score[0], size_score[1]))
+    print("Time Score: %.2f -vs- %.2f" % (time_score[0], time_score[1]))
+    print("")
 
 
 if __name__ == '__main__':
@@ -481,15 +481,15 @@ if __name__ == '__main__':
 
     if 'ab-compare' in flags:
         if '-res1' not in myargs or '-res2' not in myargs:
-            print "Error: Must specify two result directories:"
-            print USAGE_STRING
+            print("Error: Must specify two result directories:")
+            print(USAGE_STRING)
             os._exit(1)
         ab_compare(myargs['-res1'], myargs['-res2'])
         os._exit(1)
 
     if '-domain' not in myargs:
-        print "Error: Must choose a domain:"
-        print USAGE_STRING
+        print("Error: Must choose a domain:")
+        print(USAGE_STRING)
         os._exit(1)
 
     if 'fip-vs-prp' in flags:

@@ -23,7 +23,7 @@ results = run_experiment(
 good_results = results.filter(lambda result: not result.timed_out)
 good_results = [good_results[i] for i in good_results.get_ids()]
 
-print "Coverage: %d / %d" % (len(good_results), len(domprobs))
+print("Coverage: %d / %d" % (len(good_results), len(domprobs)))
 
 try:
     data = ['runtime(s),size(nodes)'] + ["%f,%d" % (res.runtime, get_value(res.output_file, '.*State-Action Pairs: (\d+)\n.*', int)) for res in good_results]
